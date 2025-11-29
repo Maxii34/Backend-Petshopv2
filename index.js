@@ -1,5 +1,4 @@
-import dotenv from "dotenv";
-dotenv.config();
+
 import ConfigServer from "./src/servers/config.js";
 
 const server = new ConfigServer();
