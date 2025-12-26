@@ -4,6 +4,7 @@ import morgan from "morgan";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import 'dotenv/config';
+import './dbConfig.js'
 
 export default class Server {
   constructor() {
