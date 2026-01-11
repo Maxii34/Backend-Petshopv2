@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const alimentoSchema = new Schema(
+const productoPetSchema = new Schema(
   {
     nombreProducto: {
       type: String,
@@ -98,6 +98,6 @@ const alimentoSchema = new Schema(
   }
 );
 
-const Alimento = mongoose.model("Alimento", alimentoSchema);
+const Alimento = mongoose.model("Alimento", productoPetSchema);
 
 export default Alimento;
