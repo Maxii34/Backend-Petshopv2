@@ -5,12 +5,14 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import 'dotenv/config';
 import './dbConfig.js'
+import mainRouter from '../routers/index.routes.js';
 
 export default class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || 3001;
     this.middlewares();
+    this.routes();
   }
 
   middlewares() {
@@ -20,6 +22,10 @@ export default class Server {
     
     const __dirname = dirname(fileURLToPath(import.meta.url));
     this.app.use(express.static(__dirname + "/../../public"));
+  }
+
+  routes() {
+    this.app.use('/api', mainRouter);
   }
 
   listen() {
