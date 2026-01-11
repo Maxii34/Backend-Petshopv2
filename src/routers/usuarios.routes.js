@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { nuevoUsuario } from '../controllers/usuarios.controllers.js';
+import { nuevoUsuario, listarUsuarios } from '../controllers/usuarios.controllers.js';
 
 
 const router = Router();
 
 router.route("/")
-    .post(nuevoUsuario);
+    .post(nuevoUsuario)
+    .get(listarUsuarios);
 
 export default router;
