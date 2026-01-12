@@ -1,14 +1,39 @@
-import { generarJWT } from "../middlewares/generarJWT.jsx";
+import { generarJWT } from "../middlewares/generarJWT.js";
 import Usuario from "../models/usuarios.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
-export const nuevoUsuario = async (req, res) => {
+export const crearUsuario = async (req, res) => {
   try {
-    const nuevoUsuario = new Usuario(req.body);
-    await nuevoUsuario.save();
+    const { rol } = req.body;
+    // verifica si ya esiste el email
+    const usuarioExistente = await Usuario.findOne({ email: req.body.email });
+    if (usuarioExistente) {
+      return res.status(400).json({ mensaje: "El email ya está registrado" });
+    }
+    // Verificar si ya existe un usuario con rol "admin"
+    if (rol === "admin") {
+      const adminExistente = await Usuario.findOne({ rol: "admin" });
+      if (adminExistente) {
+        return res
+          .status(400)
+          .json({ mensaje: "Ya existe un usuario con rol admin" });
+      }
+    }
+    // Encriptar la contraseña
+    const saltos = bcrypt.genSaltSync(10);
+    const passwordEncriptada = bcrypt.hashSync(req.body.password, saltos);
+    req.body.password = passwordEncriptada;
+    // Crear el usuario
+    const usuario = new Usuario(req.body);
+    await usuario.save();
     res
       .status(201)
-      .json({ mensaje: "Usuario creado exitosamente", usuario: nuevoUsuario });
+      .json({
+        mensaje:
+          rol === "admin"
+            ? "Usuario admin creado exitosamente"
+            : "Usuario creado exitosamente",
+      });
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al crear usuario" });
