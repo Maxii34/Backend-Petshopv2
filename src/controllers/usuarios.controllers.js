@@ -19,21 +19,15 @@ export const crearUsuario = async (req, res) => {
           .json({ mensaje: "Ya existe un usuario con rol admin" });
       }
     }
-    // Encriptar la contraseña
-    const saltos = bcrypt.genSaltSync(10);
-    const passwordEncriptada = bcrypt.hashSync(req.body.password, saltos);
-    req.body.password = passwordEncriptada;
     // Crear el usuario
     const usuario = new Usuario(req.body);
     await usuario.save();
-    res
-      .status(201)
-      .json({
-        mensaje:
-          rol === "admin"
-            ? "Usuario admin creado exitosamente"
-            : "Usuario creado exitosamente",
-      });
+    res.status(201).json({
+      mensaje:
+        rol === "admin"
+          ? "Usuario admin creado exitosamente"
+          : "Usuario creado exitosamente",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al crear usuario" });

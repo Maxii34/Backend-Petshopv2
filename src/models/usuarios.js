@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import bcrypt from "bcrypt";
 
 const usuarioSchema = new Schema({
     nombre: { 
@@ -42,6 +43,14 @@ const usuarioSchema = new Schema({
     }
 }, {
     timestamps: true
+});
+
+// ⭐ MIDDLEWARE CORRECTO
+usuarioSchema.pre('save', async function() {
+    if (!this.isModified('password')) return;
+    
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
 const Usuario = mongoose.model('Usuario', usuarioSchema);
