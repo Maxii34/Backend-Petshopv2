@@ -45,7 +45,6 @@ const usuarioSchema = new Schema({
     timestamps: true
 });
 
-// ⭐ MIDDLEWARE CORRECTO
 usuarioSchema.pre('save', async function() {
     if (!this.isModified('password')) return;
     
