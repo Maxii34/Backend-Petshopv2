@@ -58,7 +58,7 @@ export const iniciarSesion = async (req, res) => {
     }
     const passwordValido = await bcrypt.compare(
       password,
-      usuarioEncontrado.password
+      usuarioEncontrado.password,
     );
     if (!passwordValido) {
       return res.status(401).json({ mensaje: "Credenciales inválidas" });
@@ -79,3 +79,44 @@ export const iniciarSesion = async (req, res) => {
     res.status(500).json({ mensaje: "Error al iniciar sesión" });
   }
 };
+
+export const eliminarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuarioEncontrado = await Usuario.findById(id);
+    if (!usuarioEncontrado) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    if (usuarioEncontrado.rol === "admin") {
+      const unicoAdmin = await Usuario.countDocuments({ rol: "admin" });
+      if (unicoAdmin <= 1) {
+        return res
+          .status(400)
+          .json({
+            mensaje: "No se puede eliminar el único admin del sistema.",
+          });
+      }
+    }
+
+    await Usuario.findByIdAndDelete(id);
+
+    res.status(200).json({ mensaje: "Usuario eliminado exitosamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al eliminar usuario" });
+  }
+};
+
+export const actualizarUsuario = async (req, res) => {
+  try {
+
+
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ mensaje: "Error al actualizar usuario" });
+  }
+};
+
+export const obtenerUsuario = async (req, res) => {};
