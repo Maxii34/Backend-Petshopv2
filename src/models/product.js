@@ -4,54 +4,87 @@ const productSchema = new mongoose.Schema(
   {
     nombre: {
       type: String,
-      required: true,
+      required: [true, "El nombre del producto es obligatorio"],
       trim: true,
+      minlength: [5, "El nombre debe tener al menos 5 caracteres"],
+      maxlength: [150, "El nombre no puede superar los 150 caracteres"],
     },
 
     descripcion: {
       type: String,
-      required: true,
+      required: [true, "La descripción es obligatoria"],
+      trim: true,
+      minlength: [20, "La descripción debe tener al menos 20 caracteres"],
+      maxlength: [500, "La descripción no puede superar los 500 caracteres"],
     },
 
     precio: {
       type: Number,
-      required: true,
-      min: 0,
+      required: [true, "El precio es obligatorio"],
+      min: [0, "El precio no puede ser negativo"],
+      max: [900000, "El precio excede el máximo permitido"],
     },
 
     stock: {
       type: Number,
-      required: true,
+      required: [true, "El stock es obligatorio"],
+      min: [0, "El stock no puede ser negativo"],
+      max: [10000, "Stock demasiado alto"],
       default: 0,
     },
 
     imagenPrincipal: {
       type: String,
-      required: true,
+      required: [true, "La imagen principal es obligatoria"],
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return /^https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)$/i.test(v);
+        },
+        message: "URL de imagen inválida",
+      },
     },
 
-    imagenes: [String],
+    imagenes: [
+      {
+        type: String,
+        trim: true,
+        validate: {
+          validator: function (v) {
+            return /^https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)$/i.test(v);
+          },
+          message: "Una de las URLs de imagen es inválida",
+        },
+      },
+    ],
 
-    marca: String,
+    marca: {
+      type: String,
+      trim: true,
+      minlength: [2, "La marca debe tener al menos 2 caracteres"],
+      maxlength: [50, "La marca no puede superar los 50 caracteres"],
+    },
 
     tipoAnimal: {
       type: String,
-      enum: ["Perro", "Gato", "Ave", "Roedor", "Otro"],
+      enum: {
+        values: ["Perro", "Gato", "Ave", "Roedor", "Otro"],
+        message: "Tipo de animal inválido",
+      },
     },
 
     categoria: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      required: true,
+      required: [true, "La categoría es obligatoria"],
     },
 
-    // 🔥 Datos específicos según tipo
     detalles: {
       type: Object,
       default: {},
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default mongoose.model("Product", productSchema);
