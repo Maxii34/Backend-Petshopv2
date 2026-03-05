@@ -62,7 +62,7 @@ usuarioSchema.pre("save", async function (next) {
 });
 
 //metodo para comprar contraseñas (login)
-usuarioSchema.method.compararPassword = async function (passwordIngresado) {
+usuarioSchema.methods.compararPassword = async function (passwordIngresado) {
   return await bcrypt.compare(passwordIngresado, this.password);
 };
 
