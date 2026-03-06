@@ -5,14 +5,13 @@ import {
   iniciarSesion,
   eliminarUsuario,
   actualizarUsuario,
-  editarUsuariocampos,
 } from "../controllers/usuarios.controllers.js";
 
 const router = Router();
 
 router.route("/").post(crearUsuario).get(listarUsuarios);
 
-router.route("/:id").delete(eliminarUsuario).put(actualizarUsuario).patch(editarUsuariocampos);
+router.route("/:id").delete(eliminarUsuario).put(actualizarUsuario);
 
 router.route("/login").post(iniciarSesion);
 
