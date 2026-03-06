@@ -29,10 +29,14 @@ const usuarioSchema = new Schema(
       type: String,
       required: [true, "La contraseña es requerida"],
       minlength: [8, "La contraseña debe tener al menos 8 caracteres"],
-      match: [
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial",
-      ],
+      validate: {
+        validator: function (v) {
+          if (v.startsWith("$2b$") || v.startsWith("$2a$")) return true;
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(v);
+        },
+        message:
+          "La contraseña debe tener al menos una mayúscula, una minúscula, un número y un carácter especial (@$!%*?&)",
+      },
     },
     rol: {
       type: String,
@@ -43,25 +47,16 @@ const usuarioSchema = new Schema(
       type: Date,
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true }
 );
 
-//encripta la contraseña antes de guardar
-usuarioSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
+// ✅ Sin next() — Mongoose async moderno
+usuarioSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+  this.password = await bcrypt.hash(this.password, 10);
 });
 
-//metodo para comprar contraseñas (login)
+// ✅ Bug corregido: method → methods
 usuarioSchema.methods.compararPassword = async function (passwordIngresado) {
   return await bcrypt.compare(passwordIngresado, this.password);
 };

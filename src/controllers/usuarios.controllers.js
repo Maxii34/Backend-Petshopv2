@@ -22,7 +22,7 @@ export const crearUsuario = async (req, res) => {
     // Crear el usuario
     const usuario = new Usuario(req.body);
     await usuario.save();
-    res.status(201).json({
+    res.status(201).json(usuario, {
       mensaje:
         rol === "admin"
           ? "Usuario admin creado exitosamente"
@@ -91,11 +91,9 @@ export const eliminarUsuario = async (req, res) => {
     if (usuarioEncontrado.rol === "admin") {
       const unicoAdmin = await Usuario.countDocuments({ rol: "admin" });
       if (unicoAdmin <= 1) {
-        return res
-          .status(400)
-          .json({
-            mensaje: "No se puede eliminar el único admin del sistema.",
-          });
+        return res.status(400).json({
+          mensaje: "No se puede eliminar el único admin del sistema.",
+        });
       }
     }
 
@@ -110,12 +108,56 @@ export const eliminarUsuario = async (req, res) => {
 
 export const actualizarUsuario = async (req, res) => {
   try {
+    const { id } = req.params;
+    //Se evita que se pueda cambiar el password y rol en esta peticion
+    const { password, rol, email, ...datosActualizables } = req.body;
+    const usuarioActualizado = await Usuario.findByIdAndUpdate(
+      id,
+      datosActualizables,
+      { new: true, runValidators: true },
+    );
 
-
-    
+    if (!usuarioActualizado) {
+      return res.status(404).json({
+        ok: false,
+        mensaje: "Usuario no encontrado",
+      });
+    }
+    res.status(200).json({
+      ok: true,
+      mensaje: "Usuario actualizado correctamente",
+      usuario: usuarioActualizado,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ mensaje: "Error al actualizar usuario" });
+  }
+};
+
+export const editarUsuariocampos = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nombre, apellido, rol, ...datosActualizables } = req.body;
+
+    const usuarioActualizado = await Usuario.findByIdAndUpdate(
+      id,
+      datosActualizables,
+      { new: true, runValidators: true },
+    );
+
+    if (!usuarioActualizado) {
+      return res
+        .status(404)
+        .json({ ok: false, mensaje: "Usuario no encontrado" });
+    }
+
+    res.status(200).json({
+      ok: true,
+      mensaje: "Usuario actualizado correctamente",
+      usuario: usuarioActualizado,
+    });
+  } catch (error) {
+    res.status(500).json({ ok: false, mensaje: "Error al actualizar" });
   }
 };
 
