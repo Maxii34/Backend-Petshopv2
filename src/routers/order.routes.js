@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { nuevaOrder } from "../controllers/order.controllers.js";
+import { eliminarOrden, listarOrden, nuevaOrder, obtenerOrdenID } from "../controllers/order.controllers.js";
 
 const router = Router();
 
-router.route("/").post(nuevaOrder)
+router.route("/").post(nuevaOrder).get(listarOrden);
+router.route("/").get(obtenerOrdenID).delete(eliminarOrden);
 
 export default router;
