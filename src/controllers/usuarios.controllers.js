@@ -37,7 +37,7 @@ export const crearUsuario = async (req, res) => {
 export const listarUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.find();
-    res.json({ mensaje: "Lista de usuarios", usuarios: usuarios });
+    res.status(200).json({ mensaje: "Lista de usuarios", usuarios: usuarios });
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al listar usuarios" });

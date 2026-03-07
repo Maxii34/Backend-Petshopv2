@@ -73,10 +73,20 @@ const productSchema = new mongoose.Schema(
       },
     },
 
+
     categoria: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      type: String,
       required: [true, "La categoría es obligatoria"],
+      enum: {
+        values: [
+          "Alimentos",
+          "Juguetes",
+          "Higiene",
+          "Accesorios",
+          "Medicamentos",
+        ],
+        message: "Categoría inválida",
+      },
     },
 
     detalles: {
@@ -84,7 +94,7 @@ const productSchema = new mongoose.Schema(
       default: {},
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Product", productSchema);
