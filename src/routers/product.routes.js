@@ -6,14 +6,15 @@ import {
   listarProductos,
   obtenerProducto,
 } from "../controllers/product.controllers.js";
+import productValidacion from "../middlewares/productosValidacion.js"
 
 const router = Router();
 
-router.route("/").post(agregarProductoNuevo).get(listarProductos);
+router.route("/").post(productValidacion, agregarProductoNuevo).get(listarProductos);
 router
   .route("/:id")
   .get(obtenerProducto)
   .delete(deleteProducto)
-  .put(editarProducto);
+  .put(productValidacion, editarProducto);
 
 export default router;
