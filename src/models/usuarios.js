@@ -50,13 +50,11 @@ const usuarioSchema = new Schema(
   { timestamps: true }
 );
 
-// ✅ Sin next() — Mongoose async moderno
 usuarioSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
 });
 
-// ✅ Bug corregido: method → methods
 usuarioSchema.methods.compararPassword = async function (passwordIngresado) {
   return await bcrypt.compare(passwordIngresado, this.password);
 };
