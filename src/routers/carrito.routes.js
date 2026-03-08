@@ -5,8 +5,8 @@ import {
   listarCarts,
   nuevoCart,
   obtenerCarts,
-} from "../controllers/carrito.controllers";
-import cartValidacion from "../middlewares/carritoValidacion"
+} from "../controllers/carrito.controllers.js";
+import cartValidacion from "../middlewares/carritoValidacion.js"
 
 const router = Router();
 

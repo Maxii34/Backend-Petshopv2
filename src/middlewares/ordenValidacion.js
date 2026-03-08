@@ -32,12 +32,6 @@ const validarOrder = [
     .isFloat({ min: 0 })
     .withMessage("Precio inválido"),
 
-  body("totalAmount")
-    .notEmpty()
-    .withMessage("El total es obligatorio")
-    .isFloat({ min: 0 })
-    .withMessage("Total inválido"),
-
   body("status")
     .optional()
     .isIn(["pendiente", "pagado", "enviado", "entregado", "cancelado"])

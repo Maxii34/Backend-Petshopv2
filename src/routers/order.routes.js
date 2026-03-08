@@ -10,6 +10,6 @@ import orderValidacion from "../middlewares/ordenValidacion.js"
 const router = Router();
 
 router.route("/").post(orderValidacion, nuevaOrder).get(listarOrden);
-router.route("/").get(obtenerOrdenID).delete(eliminarOrden);
+router.route("/:id").get(obtenerOrdenID).delete(eliminarOrden);
 
 export default router;
