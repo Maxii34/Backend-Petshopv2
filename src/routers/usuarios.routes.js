@@ -6,13 +6,17 @@ import {
   eliminarUsuario,
   actualizarUsuario,
 } from "../controllers/usuarios.controllers.js";
-import userValidacion from "../middlewares/usuarioValidations.js"
+import userValidacion from "../middlewares/usuarioValidations.js";
+import validarID from "../middlewares/validacionID.js";
 
 const router = Router();
 
 router.route("/").post(userValidacion, crearUsuario).get(listarUsuarios);
 
-router.route("/:id").delete(eliminarUsuario).put( userValidacion,actualizarUsuario);
+router
+  .route("/:id")
+  .delete(validarID, eliminarUsuario)
+  .put([validarID, userValidacion], actualizarUsuario);
 
 router.route("/login").post(iniciarSesion);
 

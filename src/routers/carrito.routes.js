@@ -6,12 +6,17 @@ import {
   nuevoCart,
   obtenerCarts,
 } from "../controllers/carrito.controllers.js";
-import cartValidacion from "../middlewares/carritoValidacion.js"
+import cartValidacion from "../middlewares/carritoValidacion.js";
+import validarID from "../middlewares/validacionID.js";
 
 const router = Router();
 
 router.route("/").post(cartValidacion, nuevoCart).get(listarCarts);
 
-router.route("/:id").get(obtenerCarts).put(cartValidacion, actualizarCart).delete(eliminarcart);
+router
+  .route("/:id")
+  .get(validarID, obtenerCarts)
+  .put([validarID, cartValidacion], actualizarCart)
+  .delete(validarID, eliminarcart);
 
 export default router;

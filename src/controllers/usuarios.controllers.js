@@ -1,4 +1,3 @@
-import { generarJWT } from "../middlewares/generarJWT.js";
 import Usuario from "../models/usuarios.js";
 import bcrypt from "bcrypt";
 
