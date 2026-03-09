@@ -35,16 +35,6 @@ const validarProducto = [
     .matches(/^https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)$/i)
     .withMessage("URL de imagen inválida"),
 
-  body("imagenes")
-    .optional()
-    .isArray()
-    .withMessage("Las imágenes deben ser un array")
-    .custom((arr) => {
-      const regex = /^https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)$/i;
-      return arr.every((url) => regex.test(url));
-    })
-    .withMessage("Una de las URLs de imagen es inválida"),
-
   body("marca")
     .optional()
     .trim()
