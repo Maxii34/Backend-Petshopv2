@@ -28,12 +28,7 @@ const validarProducto = [
     .isInt({ min: 0, max: 10000 })
     .withMessage("El stock debe ser un número entero entre 0 y 10000"),
 
-  body("imagenPrincipal")
-    .trim()
-    .notEmpty()
-    .withMessage("La imagen principal es obligatoria")
-    .matches(/^https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)$/i)
-    .withMessage("URL de imagen inválida"),
+  body("imagenes").optional(),
 
   body("marca")
     .optional()
@@ -53,9 +48,15 @@ const validarProducto = [
     .withMessage("Categoría inválida"),
 
   body("detalles")
-    .optional()
-    .isObject()
-    .withMessage("Los detalles deben ser un objeto"),
+  .optional()
+  .custom((value) => {
+    try {
+      JSON.parse(value);
+      return true;
+    } catch {
+      throw new Error("Los detalles deben ser un JSON válido");
+    }
+  }),
 
   (req, res, next) => resultadoValidacion(req, res, next),
 ];

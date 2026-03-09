@@ -1,17 +1,36 @@
+import subirImagenCloudinary from "../helpers/cloudinaryUploader.js";
 import product from "../models/product.js";
 
 export const agregarProductoNuevo = async (req, res) => {
   try {
-    const nuevoProducto = await product(req.body);
+
+    if (req.body.detalles) {
+      req.body.detalles = JSON.parse(req.body.detalles);
+    }
+
+    let imagenUrl = "";
+
+    if (req.file) {
+      const resultado = await subirImagenCloudinary(req.file.buffer);
+      imagenUrl = resultado.secure_url;
+    }
+
+    req.body.imagenes = [imagenUrl];
+
+    const nuevoProducto = new product(req.body);
     await nuevoProducto.save();
-    res
-      .status(201)
-      .json(nuevoProducto, { mensaje: "Producto agregado exitosamente." });
+
+    res.status(201).json({
+      ok: true,
+      mensaje: "Producto agregado correctamente",
+      producto: nuevoProducto
+    });
+
   } catch (error) {
-    console.error("Error en agregarProductoNuevo:", error);
+    console.error(error);
     res.status(500).json({
-      ok: false,
-      mensaje: "Error interno del servidor al agregar el producto",
+      ok:false,
+      mensaje:"Error interno del servidor"
     });
   }
 };

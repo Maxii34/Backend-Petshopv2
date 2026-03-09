@@ -9,6 +9,7 @@ import mainRouter from '../routers/index.routes.js';
 
 export default class Server {
   constructor() {
+    
     this.app = express();
     this.port = process.env.PORT || 3001;
     this.middlewares();

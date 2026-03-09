@@ -33,21 +33,10 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    imagenPrincipal: {
-      type: String,
-      required: [true, "La imagen principal es obligatoria"],
-      trim: true,
-      validate: {
-        validator: function (v) {
-          return /^https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)$/i.test(v);
-        },
-        message: "URL de imagen inválida",
-      },
-    },
-
     imagenes: [
       {
         type: String,
+        required: [true, "Debe haber al menos una imagen del producto"],
         trim: true,
         validate: {
           validator: function (v) {
@@ -72,7 +61,6 @@ const productSchema = new mongoose.Schema(
         message: "Tipo de animal inválido",
       },
     },
-
 
     categoria: {
       type: String,
