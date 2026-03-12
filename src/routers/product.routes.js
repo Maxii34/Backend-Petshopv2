@@ -13,10 +13,9 @@ import errorMulter from "../middlewares/errorMulter.js"
 
 const router = Router();
 
-//upload.single('imagen'), errorMulter,
 router
   .route("/")
-  .post([upload.single('imagenes'), errorMulter, productValidacion], agregarProductoNuevo)
+  .post([upload.fields([{ name: 'imagenes', maxCount: 10 }]), errorMulter, productValidacion], agregarProductoNuevo)
   .get(listarProductos);
 router
   .route("/:id")

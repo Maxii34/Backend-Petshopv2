@@ -8,15 +8,20 @@ export const agregarProductoNuevo = async (req, res) => {
       req.body.detalles = JSON.parse(req.body.detalles);
     }
 
-    if (!req.file) {
+    if (!req.files || !req.files.imagenes || req.files.imagenes.length === 0) {
       return res.status(400).json({
         ok: false,
         mensaje: "Debes enviar al menos una imagen del producto"
       });
     }
 
-    const resultado = await subirImagenCloudinary(req.file.buffer);
-    req.body.imagenes = [resultado.secure_url];
+    const imagenes = [];
+    for (const file of req.files.imagenes) {
+      const resultado = await subirImagenCloudinary(file.buffer);
+      imagenes.push(resultado.secure_url);
+    }
+    
+    req.body.imagenes = imagenes;
 
     const nuevoProducto = new product(req.body);
     await nuevoProducto.save();
