@@ -28,8 +28,6 @@ const validarProducto = [
     .isInt({ min: 0, max: 10000 })
     .withMessage("El stock debe ser un número entero entre 0 y 10000"),
 
-  body("imagenes").optional(),
-
   body("marca")
     .optional()
     .trim()
@@ -42,6 +40,7 @@ const validarProducto = [
     .withMessage("Tipo de animal inválido"),
 
   body("categoria")
+    .trim()
     .notEmpty()
     .withMessage("La categoría es obligatoria")
     .isIn(["Alimentos", "Juguetes", "Higiene", "Accesorios", "Medicamentos"])
