@@ -7,7 +7,9 @@ export const crearUsuario = async (req, res) => {
     // verifica si ya esiste el email
     const usuarioExistente = await Usuario.findOne({ email: req.body.email });
     if (usuarioExistente) {
-      return res.status(400).json({ mensaje: "El email ya está registrado" });
+      return res
+        .status(400)
+        .json({ ok: false, mensaje: "El email ya está registrado" });
     }
     // Verificar si ya existe un usuario con rol "admin"
     if (rol === "admin") {
@@ -15,31 +17,41 @@ export const crearUsuario = async (req, res) => {
       if (adminExistente) {
         return res
           .status(400)
-          .json({ mensaje: "Ya existe un usuario con rol admin" });
+          .json({ ok: false, mensaje: "Ya existe un usuario con rol admin" });
       }
     }
     // Crear el usuario
     const usuario = new Usuario(req.body);
     await usuario.save();
-    res.status(201).json(usuario, {
+    res.status(201).json({
+      ok: true,
       mensaje:
         rol === "admin"
           ? "Usuario admin creado exitosamente"
           : "Usuario creado exitosamente",
+      usuario: usuario,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: "Error al crear usuario" });
+    console.error("Error al crear usuario", error);
+    res.status(500).json({
+      ok: false,
+      mensaje: "Error interno del servidor al crear usuario",
+    });
   }
 };
 
 export const listarUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.find();
-    res.status(200).json({ mensaje: "Lista de usuarios", usuarios: usuarios });
+    res
+      .status(200)
+      .json({ ok: true, mensaje: "Lista de usuarios", usuarios: usuarios });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: "Error al listar usuarios" });
+    console.error("Error al editar Producto", error);
+    res.status(500).json({
+      ok: false,
+      mensaje: "Error interno del servidor al editar producto",
+    });
   }
 };
 
@@ -49,21 +61,26 @@ export const iniciarSesion = async (req, res) => {
     if (!email || !password) {
       return res
         .status(400)
-        .json({ mensaje: "Email y contraseña son obligatorios" });
+        .json({ ok: false, mensaje: "Email y contraseña son obligatorios" });
     }
     const usuarioEncontrado = await Usuario.findOne({ email });
     if (!usuarioEncontrado) {
-      return res.status(404).json({ mensaje: "Credenciales inválidas" });
+      return res
+        .status(404)
+        .json({ ok: false, mensaje: "Credenciales inválidas" });
     }
     const passwordValido = await bcrypt.compare(
       password,
       usuarioEncontrado.password,
     );
     if (!passwordValido) {
-      return res.status(401).json({ mensaje: "Credenciales inválidas" });
+      return res
+        .status(401)
+        .json({ ok: false, mensaje: "Credenciales inválidas" });
     }
     const token = generarJWT(usuarioEncontrado._id);
     res.status(200).json({
+      ok: true,
       mensaje: "Inicio de sesión exitoso",
       token,
       usuario: {
@@ -75,7 +92,7 @@ export const iniciarSesion = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: "Error al iniciar sesión" });
+    res.status(500).json({ ok: false, mensaje: "Error al iniciar sesión" });
   }
 };
 
@@ -84,13 +101,16 @@ export const eliminarUsuario = async (req, res) => {
     const { id } = req.params;
     const usuarioEncontrado = await Usuario.findById(id);
     if (!usuarioEncontrado) {
-      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+      return res
+        .status(404)
+        .json({ ok: false, mensaje: "Usuario no encontrado" });
     }
 
     if (usuarioEncontrado.rol === "admin") {
       const unicoAdmin = await Usuario.countDocuments({ rol: "admin" });
       if (unicoAdmin <= 1) {
         return res.status(400).json({
+          ok: false,
           mensaje: "No se puede eliminar el único admin del sistema.",
         });
       }
@@ -98,10 +118,12 @@ export const eliminarUsuario = async (req, res) => {
 
     await Usuario.findByIdAndDelete(id);
 
-    res.status(200).json({ mensaje: "Usuario eliminado exitosamente" });
+    res
+      .status(200)
+      .json({ ok: true, mensaje: "Usuario eliminado exitosamente" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ mensaje: "Error al eliminar usuario" });
+    res.status(500).json({ ok: false, mensaje: "Error al eliminar usuario" });
   }
 };
 
@@ -112,7 +134,7 @@ export const actualizarUsuario = async (req, res) => {
     //  Verificar si intentaron mandar campos no permitidos
     const { email, password } = req.body;
     if (email !== undefined || password !== undefined) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         ok: false,
         mensaje: "No se pueden actualizar email ni password desde aquí",
       });
@@ -124,13 +146,13 @@ export const actualizarUsuario = async (req, res) => {
     // Eliminar campos undefined
     Object.keys(datosActualizables).forEach(
       (key) =>
-        datosActualizables[key] === undefined && delete datosActualizables[key]
+        datosActualizables[key] === undefined && delete datosActualizables[key],
     );
 
     const usuarioActualizado = await Usuario.findByIdAndUpdate(
       id,
       datosActualizables,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!usuarioActualizado) {
@@ -147,10 +169,8 @@ export const actualizarUsuario = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ mensaje: "Error al actualizar usuario" });
+    res.status(500).json({ ok: false, mensaje: "Error al actualizar usuario" });
   }
 };
-
-
 
 export const obtenerUsuario = async (req, res) => {};
