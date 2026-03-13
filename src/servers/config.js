@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import 'dotenv/config';
 import './dbConfig.js'
 import mainRouter from '../routers/index.routes.js';
+import cookieParser from "cookie-parser";
 
 export default class Server {
   constructor() {
@@ -19,6 +20,7 @@ export default class Server {
   middlewares() {
     this.app.use(cors());
     this.app.use(express.json());
+    this.app.use(cookieParser());
     this.app.use(morgan("dev"));
     
     const __dirname = dirname(fileURLToPath(import.meta.url));

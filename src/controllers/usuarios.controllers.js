@@ -79,6 +79,15 @@ export const iniciarSesion = async (req, res) => {
         .json({ ok: false, mensaje: "Credenciales inválidas" });
     }
     const token = generarJWT(usuarioEncontrado._id);
+
+    // SE enviar la cookie
+    res.cookie("token", token, {
+      httpOnly: true,        // No se puede acceder desde JavaScript (más seguro)
+      secure: false,         // true en HTTPS (producción), false en desarrollo
+      sameSite: "lax",       // Protección contra CSRF
+      maxAge: 3600000,       // 1 hora en milisegundos
+    });
+
     res.status(200).json({
       ok: true,
       mensaje: "Inicio de sesión exitoso",
