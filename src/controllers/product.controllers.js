@@ -107,24 +107,32 @@ export const deleteProducto = async (req, res) => {
 
 export const editarProducto = async (req, res) => {
   try {
-    console.log(req.params.id);
-    const productoEditado = await product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true },
-    );
-
-    if (!productoEditado) {
-      return res.status(404).json({
-        ok: false,
-        mensaje: "Producto no encontrado",
-      });
+    const productobuscado = await product.findById(req.params.id);
+    if (!productobuscado) {
+      return res.status(404).json({ ok: false, mensaje: "Producto no encontrado" });
     }
+
+    if (req.file){
+      const resultado = await subirImagenCloudinary(req.file.buffer);
+      productobuscado.imagenes = resultado.secure_url;
+    }
+
+    productobuscado.nombre = req.body.nombre;
+    productobuscado.descripcion = req.body.descripcion;
+    productobuscado.precio = req.body.precio;
+    productobuscado.categoria = req.body.categoria;
+    productobuscado.stock = req.body.stock;
+    productobuscado.marca = req.body.marca;
+    productobuscado.tipoAnimal = req.body.tipoAnimal;
+    productobuscado.categoria = req.body.categoria;
+    productobuscado.detalles = req.body.detalles;
+
+    await productobuscado.save();
 
     res.status(200).json({
       ok: true,
       mensaje: "Producto editado correctamente",
-      producto: productoEditado,
+      producto: productobuscado,
     });
   } catch (error) {
     console.error("Error al editar Producto", error);

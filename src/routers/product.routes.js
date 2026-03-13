@@ -21,6 +21,6 @@ router
   .route("/:id")
   .get(validarID, obtenerProducto)
   .delete(validarID, deleteProducto)
-  .put([validarID, productValidacion], editarProducto);
+  .put([validarID, upload.fields([{ name: 'imagenes', maxCount: 10 }]), errorMulter, productValidacion], editarProducto);
 
 export default router;
