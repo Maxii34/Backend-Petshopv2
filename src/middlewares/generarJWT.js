@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 export const generarJWT = (id) => {
     try {
         const payload = { usuario: id };
-        const token = jwt.sign(payload, process.env.TOKEN_SECRET, {expiresIn: '1h'});
+        const token = jwt.sign(payload, process.env.SECRETA_JWT, {expiresIn: '1h'});
         return token;
     } catch (error) {
         console.error("Error al generar JWT", error);

@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 const validarToken = (req, res, next) => {
   try {
     // La cookie se obtiene automáticamente
@@ -10,7 +12,7 @@ const validarToken = (req, res, next) => {
       });
     }
 
-    const payload = jwt.verify(token, process.env.SECRET);
+    const payload = jwt.verify(token, process.env.SECRETA_JWT);
     req.usuario = payload.usuario;
     next();
   } catch (error) {

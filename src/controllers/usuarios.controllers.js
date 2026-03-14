@@ -1,5 +1,6 @@
 import Usuario from "../models/usuarios.js";
 import bcrypt from "bcrypt";
+import { generarJWT } from "../middlewares/generarJWT.js";
 
 export const crearUsuario = async (req, res) => {
   try {
@@ -82,10 +83,10 @@ export const iniciarSesion = async (req, res) => {
 
     // SE enviar la cookie
     res.cookie("token", token, {
-      httpOnly: true,        // No se puede acceder desde JavaScript (más seguro)
-      secure: false,         // true en HTTPS (producción), false en desarrollo
-      sameSite: "lax",       // Protección contra CSRF
-      maxAge: 3600000,       // 1 hora en milisegundos
+      httpOnly: true, // No se puede acceder desde JavaScript (más seguro)
+      secure: false, // true en HTTPS (producción), false en desarrollo
+      sameSite: "lax", // Protección contra CSRF
+      maxAge: 3600000, // 1 hora en milisegundos
     });
 
     res.status(200).json({
@@ -182,4 +183,23 @@ export const actualizarUsuario = async (req, res) => {
   }
 };
 
-export const obtenerUsuario = async (req, res) => {};
+export const obtenerUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuarioObtenido = await Usuario.findById(id);
+    if (!usuarioObtenido) {
+      return res
+        .status(404)
+        .json({ ok: false, mensaje: "Usuario no encontrado" });
+    }
+
+    res.status(200).json({
+      ok: true,
+      mensaje: "Usuario obtenido correctamente",
+      usuario: usuarioObtenido,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ ok: false, mensaje: "Error al obtener usuario" });
+  }
+};
