@@ -121,7 +121,7 @@ export const eliminarUsuario = async (req, res) => {
       if (unicoAdmin <= 1) {
         return res.status(400).json({
           ok: false,
-          mensaje: "No se puede eliminar el único admin del sistema.",
+          mensaje: "No se puede eliminar el único administrador del sistema.",
         });
       }
     }
@@ -162,7 +162,7 @@ export const actualizarUsuario = async (req, res) => {
     const usuarioActualizado = await Usuario.findByIdAndUpdate(
       id,
       datosActualizables,
-      { new: true, runValidators: true },
+      { new: true, runValidators: false },
     );
 
     if (!usuarioActualizado) {

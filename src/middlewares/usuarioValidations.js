@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import resultadoValidacion from "./resultadoValidacion.js";
 
-const validarUsuario = [
+export const validarUsuario = [
   body("nombre")
     .trim()
     .notEmpty()
@@ -44,4 +44,33 @@ const validarUsuario = [
   (req, res, next) => resultadoValidacion(req, res, next),
 ];
 
-export default validarUsuario;
+export const validarEdicionUsuario = [
+  body("nombre")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("El nombre no puede estar vacío si se envía")
+    .isLength({ min: 2, max: 50 })
+    .withMessage("El nombre debe tener entre 2 y 50 caracteres"),
+
+  body("apellido")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("El apellido no puede estar vacío si se envía")
+    .isLength({ min: 2, max: 50 })
+    .withMessage("El apellido debe tener entre 2 y 50 caracteres"),
+
+  body("telefono")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("El teléfono no puede estar vacío si se envía"),
+
+  body("rol")
+    .optional()
+    .isIn(["usuario", "admin", "moderador"])
+    .withMessage("El rol debe ser: usuario, admin o moderador"),
+
+  (req, res, next) => resultadoValidacion(req, res, next),
+];
