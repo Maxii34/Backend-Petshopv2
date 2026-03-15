@@ -61,12 +61,6 @@ export const validarEdicionUsuario = [
     .isLength({ min: 2, max: 50 })
     .withMessage("El apellido debe tener entre 2 y 50 caracteres"),
 
-  body("telefono")
-    .optional()
-    .trim()
-    .notEmpty()
-    .withMessage("El teléfono no puede estar vacío si se envía"),
-
   body("rol")
     .optional()
     .isIn(["usuario", "admin", "moderador"])
