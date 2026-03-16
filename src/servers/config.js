@@ -18,7 +18,10 @@ export default class Server {
   }
 
   middlewares() {
-    this.app.use(cors());
+    this.app.use(cors({
+      origin: "http://localhost:5173",
+      credentials: true
+    }));
     this.app.use(express.json());
     this.app.use(cookieParser());
     this.app.use(morgan("dev"));
