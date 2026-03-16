@@ -81,6 +81,21 @@ const productSchema = new mongoose.Schema(
       type: Object,
       default: {},
     },
+
+    enOferta: {
+      type: Boolean,
+      default: false,
+    },
+
+    esNuevo: {
+      type: Boolean,
+      default: false,
+    },
+
+    destacado: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

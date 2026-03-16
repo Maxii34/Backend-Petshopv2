@@ -57,6 +57,21 @@ const validarProducto = [
     }
   }),
 
+  body("enOferta")
+    .optional()
+    .isBoolean()
+    .withMessage("El campo enOferta debe ser un valor booleano"),
+
+  body("esNuevo")
+    .optional()
+    .isBoolean()
+    .withMessage("El campo esNuevo debe ser un valor booleano"),
+
+  body("destacado")
+    .optional()
+    .isBoolean()
+    .withMessage("El campo destacado debe ser un valor booleano"),
+
   (req, res, next) => resultadoValidacion(req, res, next),
 ];
 
