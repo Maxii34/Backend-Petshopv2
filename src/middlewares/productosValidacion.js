@@ -16,6 +16,20 @@ const validarProducto = [
     .isLength({ min: 20, max: 500 })
     .withMessage("La descripción debe tener entre 20 y 500 caracteres"),
 
+    body("caracteristica")
+    .trim()
+    .notEmpty()
+    .withMessage("La caracteristica son obligatorias")
+    .isLength({ min: 20, max: 1000 })
+    .withMessage("La caracteristica debe tener entre 20 y 1000 caracteres"),
+
+    body("ingrediente")
+    .trim()
+    .notEmpty()
+    .withMessage("Los ingredientes son obligatorios")
+    .isLength({ min: 20, max: 1000 })
+    .withMessage("Los ingredientes debe tener entre 20 y 1000 caracteres"),
+
   body("precio")
     .notEmpty()
     .withMessage("El precio es obligatorio")
