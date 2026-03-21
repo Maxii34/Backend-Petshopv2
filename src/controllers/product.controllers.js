@@ -3,11 +3,6 @@ import product from "../models/product.js";
 
 export const agregarProductoNuevo = async (req, res) => {
   try {
-
-    if (req.body.detalles) {
-      req.body.detalles = JSON.parse(req.body.detalles);
-    }
-
     if (!req.files || !req.files.imagenes || req.files.imagenes.length === 0) {
       return res.status(400).json({
         ok: false,

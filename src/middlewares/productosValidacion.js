@@ -48,14 +48,8 @@ const validarProducto = [
 
   body("detalles")
   .optional()
-  .custom((value) => {
-    try {
-      JSON.parse(value);
-      return true;
-    } catch {
-      throw new Error("Los detalles deben ser un JSON válido");
-    }
-  }),
+  .isObject()
+  .withMessage("Los detalles deben ser un objeto válido"),
 
   body("enOferta")
     .optional()
