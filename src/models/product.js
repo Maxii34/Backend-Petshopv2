@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema(
 
     descripcion: {
       type: String,
-      required: [true, "La descripción es obligatoria"],
+      optional: true,
       trim: true,
       minlength: [20, "La descripción debe tener al menos 20 caracteres"],
       maxlength: [500, "La descripción no puede superar los 500 caracteres"],
@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema(
 
     caracteristica: {
       type: String,
-      required: [true, "La caracteristica son obligatorias"],
+      optional: true,
       trim: true,
       minlength: [20, "La caracteristica debe tener al menos 20 caracteres"],
       maxlength: [1000, "La caracteristica no puede superar los 1000 caracteres"],
@@ -28,7 +28,7 @@ const productSchema = new mongoose.Schema(
 
     ingrediente: {
       type: String,
-      required: [true, "Los ingredientes son obligatorios"],
+      optional: true,
       trim: true,
       minlength: [20, "Los ingredientes debe tener al menos 20 caracteres"],
       maxlength: [1000, "Los ingredientes no puede superar los 1000 caracteres"],
