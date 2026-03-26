@@ -11,19 +11,19 @@ const validarProducto = [
 
   body("descripcion")
     .trim()
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .isLength({ min: 20, max: 500 })
     .withMessage("La descripción debe tener entre 20 y 500 caracteres"),
 
     body("caracteristica") 
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage("La caracteristica debe tener entre 20 y 1000 caracteres"),
 
     body("ingrediente")
-    .optional()
+    .optional({ checkFalsy: true })
     .trim()
     .isLength({ min: 20, max: 1000 })
     .withMessage("Los ingredientes debe tener entre 20 y 1000 caracteres"),

@@ -12,25 +12,19 @@ const productSchema = new mongoose.Schema(
 
     descripcion: {
       type: String,
-      optional: true,
       trim: true,
-      minlength: [20, "La descripción debe tener al menos 20 caracteres"],
       maxlength: [500, "La descripción no puede superar los 500 caracteres"],
     },
 
     caracteristica: {
       type: String,
-      optional: true,
       trim: true,
-      minlength: [20, "La caracteristica debe tener al menos 20 caracteres"],
       maxlength: [1000, "La caracteristica no puede superar los 1000 caracteres"],
     },
 
     ingrediente: {
       type: String,
-      optional: true,
       trim: true,
-      minlength: [20, "Los ingredientes debe tener al menos 20 caracteres"],
       maxlength: [1000, "Los ingredientes no puede superar los 1000 caracteres"],
     },
 
