@@ -46,12 +46,6 @@ const usuarioSchema = new Schema(
     ultimoAcceso: {
       type: Date,
     },
-    productos: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Product",
-      },
-    ],
   },
   { timestamps: true }
 );

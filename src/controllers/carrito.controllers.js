@@ -4,6 +4,28 @@ export const nuevoCart = async (req, res) => {
   try {
     const { user, items } = req.body;
 
+    let cart = await Cart.findOne({ user });
+
+    if (cart) {
+      for (const reqItem of items) {
+        const itemIndex = cart.items.findIndex(
+          (p) => p.product.toString() === reqItem.product.toString()
+        );
+        if (itemIndex > -1) {
+          cart.items[itemIndex].quantity += reqItem.quantity;
+        } else {
+          cart.items.push(reqItem);
+        }
+      }
+      await cart.save();
+
+      return res.status(200).json({
+        ok: true,
+        mensaje: "Carrito actualizado exitosamente.",
+        carrito: cart,
+      });
+    }
+
     const nuevoCarrito = new Cart({ user, items });
     await nuevoCarrito.save();
 
@@ -23,17 +45,20 @@ export const nuevoCart = async (req, res) => {
 
 export const listarCarts = async (req, res) => {
   try {
-    const cartListados = await Cart.find();
+    const userId = req.usuario._id; 
+
+    const carrito = await Cart.findOne({ user: userId })
+      .populate("items.product");
+
     res.status(200).json({
       ok: true,
-      mensaje: "Carritos listadas exitosamente.",
-      carrito: cartListados,
+      carrito,
     });
   } catch (error) {
     console.error("Error en listarCart:", error);
     res.status(500).json({
       ok: false,
-      mensaje: "Error interno del servidor al listarCarts",
+      mensaje: "Error interno del servidor",
     });
   }
 };

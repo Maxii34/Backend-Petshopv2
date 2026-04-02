@@ -1,4 +1,5 @@
 import order from "../models/order.js";
+import Usuario from "../models/usuarios.js";
 
 //crear ordenes
 export const nuevaOrder = async (req, res) => {
@@ -11,6 +12,12 @@ export const nuevaOrder = async (req, res) => {
 
     const ordenNueva = new order({ user, products, totalAmount });
     await ordenNueva.save();
+
+    // Vinculamos los productos comprados al usuario (evitando duplicados con $addToSet)
+    const productIds = products.map((item) => item.product);
+    await Usuario.findByIdAndUpdate(user, {
+      $addToSet: { productos: { $each: productIds } },
+    });
 
     res.status(201).json({
       ok: true,
