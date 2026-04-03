@@ -45,7 +45,7 @@ export const nuevoCart = async (req, res) => {
 
 export const listarCarts = async (req, res) => {
   try {
-    const userId = req.usuario._id; 
+    const userId = req.usuario; 
 
     const carrito = await Cart.findOne({ user: userId })
       .populate("items.product");
@@ -89,23 +89,36 @@ export const obtenerCarts = async (req, res) => {
 
 export const eliminarcart = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleteCart = await Cart.findByIdAndDelete(id);
-    if (!deleteCart) {
+    const productId = req.params.id;
+    const userId = req.usuario;
+
+    if (!userId) {
+      return res.status(401).json({ ok: false, mensaje: "No autorizado" });
+    }
+
+    const cart = await Cart.findOne({ user: userId });
+    if (!cart) {
       return res.status(404).json({
         ok: false,
-        mensaje: "carrito no encontrado",
+        mensaje: "Carrito no encontrado",
       });
     }
+
+    // Filtramos los items quitando el que coincide con productId
+    cart.items = cart.items.filter(
+      (item) => item.product.toString() !== productId
+    );
+    await cart.save();
+
     res.status(200).json({
       ok: true,
-      mensaje: "Carrito eliminado exitozamente",
+      mensaje: "Producto erradicado del carrito exitosamente",
     });
   } catch (error) {
-    console.error("Error en eliminarCart:", error);
+    console.error("Error en eliminarcart:", error);
     res.status(500).json({
       ok: false,
-      mensaje: "Error interno del servidor al eliminarCart",
+      mensaje: "Error interno del servidor al eliminar el producto del carrito",
     });
   }
 };
