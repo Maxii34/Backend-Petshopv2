@@ -1,7 +1,6 @@
 import order from "../models/order.js";
-import Usuario from "../models/usuarios.js";
 
-//crear ordenes
+// Crear orden
 export const nuevaOrder = async (req, res) => {
   try {
     const { user, products } = req.body;
@@ -10,48 +9,52 @@ export const nuevaOrder = async (req, res) => {
       return acc + item.quantity * item.priceAtPurchase;
     }, 0);
 
-    const ordenNueva = new order({ user, products, totalAmount });
-    await ordenNueva.save();
-
-    // Vinculamos los productos comprados al usuario (evitando duplicados con $addToSet)
-    const productIds = products.map((item) => item.product);
-    await Usuario.findByIdAndUpdate(user, {
-      $addToSet: { productos: { $each: productIds } },
+    const ordenNueva = new order({
+      user,
+      products,
+      totalAmount,
+      status: "pendiente",
     });
+    await ordenNueva.save();
 
     res.status(201).json({
       ok: true,
-      mensaje: "Orden creada exitosamente",
-      order: ordenNueva,
+      mensaje: "Orden creada, procede al pago",
+      orderId: ordenNueva._id,
+      totalAmount: ordenNueva.totalAmount,
     });
   } catch (error) {
     console.error("Error en nuevaOrder:", error);
-    res.status(500).json({
-      ok: false,
-      mensaje: "Error interno del servidor al agregar nueva orden",
-    });
+    res.status(500).json({ ok: false, mensaje: "Error al crear la orden" });
   }
 };
 
-// Buscar ordenes
-export const listarOrden = async (req, res) => {
+// Webhook de Mercado Pago
+export const confirmarPagoWebhook = async (req, res) => {
   try {
-    const ordenesListadas = await order.find();
-    res.status(200).json({
-      ok: true,
-      mensaje: "Órdenes listadas exitosamente.",
-      orders: ordenesListadas,
-    });
+    const { data } = req.body;
+    const { orderId, paymentId, status } = data;
+
+    if (status === "approved") {
+      await order.findByIdAndUpdate(orderId, {
+        status: "pagado",
+        "payment.paymentId": paymentId,
+        "payment.method": "mercadopago",
+        "payment.paidAt": new Date(),
+      });
+
+      res.status(200).json({ ok: true, mensaje: "Pago confirmado" });
+    } else if (status === "rejected") {
+      await order.findByIdAndUpdate(orderId, { status: "cancelado" });
+      res.status(200).json({ ok: true, mensaje: "Pago rechazado" });
+    }
   } catch (error) {
-    console.error("Error en listarOrdenes:", error);
-    res.status(500).json({
-      ok: false,
-      mensaje: "Error interno del servidor al listar las órdenes",
-    });
+    console.error("Error en webhook:", error);
+    res.status(500).json({ ok: false });
   }
 };
 
-// Buscar UNA orden por ID
+// Obtener orden por ID (para historial/detalles)
 export const obtenerOrdenID = async (req, res) => {
   try {
     const { id } = req.params;
@@ -70,20 +73,53 @@ export const obtenerOrdenID = async (req, res) => {
       order: orden,
     });
   } catch (error) {
-    console.error("Error en obtenerOrden:", error);
+    console.error("Error en obtenerOrdenID:", error);
     res.status(500).json({
       ok: false,
-      mensaje: "Error interno del servidor al obtener la orden",
+      mensaje: "Error al obtener la orden",
     });
   }
 };
 
-export const eliminarOrden = async (req, res) => {
+// Listar órdenes (admin)
+export const listarOrden = async (req, res) => {
+  try {
+    const ordenesListadas = await order.find();
+    res.status(200).json({
+      ok: true,
+      mensaje: "Órdenes listadas exitosamente.",
+      orders: ordenesListadas,
+    });
+  } catch (error) {
+    console.error("Error en listarOrden:", error);
+    res.status(500).json({
+      ok: false,
+      mensaje: "Error al listar las órdenes",
+    });
+  }
+};
+
+// OPCIONAL: Actualizar estado de orden (para cambiar a "enviado", "entregado", etc.)
+export const actualizarEstadoOrden = async (req, res) => {
   try {
     const { id } = req.params;
-    const ordenEliminada = await order.findByIdAndDelete(id);
+    const { status } = req.body;
 
-    if (!ordenEliminada) {
+    const estadosValidos = ["pendiente", "pagado", "enviado", "entregado", "cancelado"];
+    if (!estadosValidos.includes(status)) {
+      return res.status(400).json({
+        ok: false,
+        mensaje: "Estado inválido",
+      });
+    }
+
+    const ordenActualizada = await order.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!ordenActualizada) {
       return res.status(404).json({
         ok: false,
         mensaje: "Orden no encontrada",
@@ -92,14 +128,14 @@ export const eliminarOrden = async (req, res) => {
 
     res.status(200).json({
       ok: true,
-      mensaje: "Orden eliminada exitosamente.",
-      order: ordenEliminada,
+      mensaje: "Orden actualizada exitosamente.",
+      order: ordenActualizada,
     });
   } catch (error) {
-    console.error("Error en eliminarOrden:", error);
+    console.error("Error en actualizarEstadoOrden:", error);
     res.status(500).json({
       ok: false,
-      mensaje: "Error interno del servidor al eliminar la orden",
+      mensaje: "Error al actualizar la orden",
     });
   }
 };

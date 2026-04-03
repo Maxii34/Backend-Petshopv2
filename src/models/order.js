@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -7,7 +5,6 @@ const orderSchema = new mongoose.Schema(
       ref: "Usuario",
       required: [true, "El usuario es obligatorio"],
     },
-
     products: [
       {
         product: {
@@ -27,13 +24,11 @@ const orderSchema = new mongoose.Schema(
         },
       },
     ],
-
     totalAmount: {
       type: Number,
       required: [true, "El total es obligatorio"],
       min: [0, "Total inválido"],
     },
-
     status: {
       type: String,
       enum: {
@@ -42,8 +37,16 @@ const orderSchema = new mongoose.Schema(
       },
       default: "pendiente",
     },
+    payment: {
+      paymentId: String, // ID de Mercado Pago
+      method: {
+        type: String,
+        enum: ["mercadopago", "transferencia", "efectivo"],
+        default: "mercadopago",
+      },
+      paidAt: Date, // Cuándo se pagó
+      reference: String, // Referencia adicional si es necesario
+    },
   },
   { timestamps: true }
 );
-
-export default mongoose.model("Order", orderSchema);
