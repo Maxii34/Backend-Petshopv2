@@ -19,13 +19,19 @@ const productSchema = new mongoose.Schema(
     caracteristica: {
       type: String,
       trim: true,
-      maxlength: [1000, "La caracteristica no puede superar los 1000 caracteres"],
+      maxlength: [
+        1000,
+        "La caracteristica no puede superar los 1000 caracteres",
+      ],
     },
 
     ingrediente: {
       type: String,
       trim: true,
-      maxlength: [1000, "Los ingredientes no puede superar los 1000 caracteres"],
+      maxlength: [
+        1000,
+        "Los ingredientes no puede superar los 1000 caracteres",
+      ],
     },
 
     precio: {
@@ -95,6 +101,12 @@ const productSchema = new mongoose.Schema(
     enOferta: {
       type: Boolean,
       default: false,
+    },
+    descuento: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 90,
     },
 
     esNuevo: {

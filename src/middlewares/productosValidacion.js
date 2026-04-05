@@ -68,6 +68,11 @@ const validarProducto = [
     .isBoolean()
     .withMessage("El campo enOferta debe ser un valor booleano"),
 
+  body("descuento")
+    .optional()
+    .isFloat({ min: 0, max: 90 })
+    .withMessage("El descuento debe ser un número entre 0 y 90"),
+
   body("esNuevo")
     .optional()
     .isBoolean()

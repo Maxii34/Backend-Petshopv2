@@ -6,7 +6,7 @@ export const agregarProductoNuevo = async (req, res) => {
     if (!req.files || !req.files.imagenes || req.files.imagenes.length === 0) {
       return res.status(400).json({
         ok: false,
-        mensaje: "Debes enviar al menos una imagen del producto"
+        mensaje: "Debes enviar al menos una imagen del producto",
       });
     }
 
@@ -15,7 +15,7 @@ export const agregarProductoNuevo = async (req, res) => {
       const resultado = await subirImagenCloudinary(file.buffer);
       imagenes.push(resultado.secure_url);
     }
-    
+
     req.body.imagenes = imagenes;
 
     const nuevoProducto = new product(req.body);
@@ -24,14 +24,13 @@ export const agregarProductoNuevo = async (req, res) => {
     res.status(201).json({
       ok: true,
       mensaje: "Producto agregado correctamente",
-      producto: nuevoProducto
+      producto: nuevoProducto,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      ok:false,
-      mensaje:"Error interno del servidor"
+      ok: false,
+      mensaje: "Error interno del servidor",
     });
   }
 };
@@ -104,10 +103,12 @@ export const editarProducto = async (req, res) => {
   try {
     const productobuscado = await product.findById(req.params.id);
     if (!productobuscado) {
-      return res.status(404).json({ ok: false, mensaje: "Producto no encontrado" });
+      return res
+        .status(404)
+        .json({ ok: false, mensaje: "Producto no encontrado" });
     }
 
-    if (req.file){
+    if (req.file) {
       const resultado = await subirImagenCloudinary(req.file.buffer);
       productobuscado.imagenes = resultado.secure_url;
     }
@@ -121,7 +122,12 @@ export const editarProducto = async (req, res) => {
     productobuscado.tipoAnimal = req.body.tipoAnimal;
     productobuscado.categoria = req.body.categoria;
     productobuscado.detalles = req.body.detalles;
-
+    productobuscado.enOferta = req.body.enOferta;
+    productobuscado.descuento = req.body.descuento;
+    productobuscado.esNuevo = req.body.esNuevo;
+    productobuscado.destacado = req.body.destacado;
+    productobuscado.ingrediente = req.body.ingrediente;
+    productobuscado.caracteristica = req.body.caracteristica;
     await productobuscado.save();
 
     res.status(200).json({
