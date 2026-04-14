@@ -22,6 +22,10 @@ const cartSchema = new mongoose.Schema(
           min: [1, "La cantidad mínima es 1"],
           max: [100, "Cantidad demasiado alta"],
         },
+        precioConDescuento: {
+          type: Number,
+          optional: true,
+        }
       },
     ],
   },
