@@ -48,6 +48,69 @@ export const listarProductos = async (req, res) => {
   }
 };
 
+export const listarProductosFiltrados = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const busqueda = req.query.busqueda || "";
+ 
+    // Construir filtros dinámicamente
+    const filtros = {};
+ 
+    // Búsqueda por texto
+    if (busqueda) {
+      filtros.$or = [
+        { nombre: { $regex: busqueda, $options: "i" } },
+        { descripcion: { $regex: busqueda, $options: "i" } },
+        { marca: { $regex: busqueda, $options: "i" } },
+      ];
+    }
+ 
+    // Filtros exactos
+    if (req.query.categoria) filtros.categoria = req.query.categoria;
+    if (req.query.tipoAnimal) filtros.tipoAnimal = req.query.tipoAnimal;
+    if (req.query.enOferta === "true") filtros.enOferta = true;
+ 
+    // Filtro de precio
+    if (req.query.precioMin || req.query.precioMax) {
+      filtros.precio = {};
+      if (req.query.precioMin) filtros.precio.$gte = parseFloat(req.query.precioMin);
+      if (req.query.precioMax) filtros.precio.$lte = parseFloat(req.query.precioMax);
+    }
+ 
+    // Contar y paginar
+    const totalProductos = await product.countDocuments(filtros);
+    const totalPages = Math.ceil(totalProductos / limit);
+ 
+    const products = await product
+      .find(filtros)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+ 
+    res.status(200).json({
+      ok: true,
+      mensaje: "Productos filtrados correctamente",
+      data: products,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalProductos: totalProductos,
+        productosEnPagina: products.length,
+        hasMore: page < totalPages,
+      },
+    });
+  } catch (error) {
+    console.error("Error en listarProductosFiltrados:", error);
+    res.status(500).json({
+      ok: false,
+      mensaje: "Error interno del servidor",
+    });
+  }
+};
+
+
 export const obtenerProducto = async (req, res) => {
   try {
     const { id } = req.params;

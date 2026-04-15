@@ -4,6 +4,7 @@ import {
   deleteProducto,
   editarProducto,
   listarProductos,
+  listarProductosFiltrados,
   obtenerProducto,
 } from "../controllers/product.controllers.js";
 import productValidacion from "../middlewares/productosValidacion.js";
@@ -12,6 +13,9 @@ import upload from "../helpers/upload.js"
 import errorMulter from "../middlewares/errorMulter.js"
 
 const router = Router();
+
+// Ruta de filtrado - AGREGAR ESTA LÍNEA
+router.route("/filtrados").get(listarProductosFiltrados);
 
 router
   .route("/")
