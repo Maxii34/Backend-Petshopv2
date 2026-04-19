@@ -2,6 +2,7 @@ import client from "../servers/mercadopago.js";
 import { Preference, Payment } from "mercadopago";
 import product from "../models/product.js";
 import Pedido from "../models/order.js";
+import Cart from "../models/cart.js";
 
 export const crearOrdenCarrito = async (req, res) => {
   try {
@@ -51,6 +52,9 @@ export const crearOrdenCarrito = async (req, res) => {
       status: "pendiente", 
     });
     await nuevoPedido.save();
+
+    // Vaciar el carrito del usuario después de crear el pedido
+    await Cart.findOneAndUpdate({ user }, { $set: { items: [] } });
 
 
     const preference = {
