@@ -61,7 +61,7 @@ export const crearOrdenCarrito = async (req, res) => {
       items: itemsParaMP,
       back_urls: {
 
-        success: `${process.env.FRONTEND_URL || 'https://localhost:5173'}/user/confirmacion`,
+        success: `${process.env.FRONTEND_URL}`,
       },
 
       external_reference: nuevoPedido._id.toString(),
