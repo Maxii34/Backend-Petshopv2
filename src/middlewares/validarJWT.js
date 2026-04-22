@@ -1,27 +1,31 @@
 import jwt from "jsonwebtoken";
 
-const validarToken = (req, res, next) => {
+const validarJWT = (req, res, next) => {
+  const authHeader = req.header("Authorization");
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      ok: false,
+      msg: "No hay token en la petición o el formato es incorrecto",
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+
   try {
-    // La cookie se obtiene automáticamente
-    let token = req.cookies.token;
+    const { uid, nombre } = jwt.verify(token, process.env.SECRET_JWT);
 
-    if (!token) {
-      return res.status(401).json({
-        ok: false,
-        mensaje: "No se proporcionó token en la petición",
-      });
-    }
+    req.uid = uid;
+    req.nombre = nombre;
 
-    const payload = jwt.verify(token, process.env.SECRETA_JWT);
-    req.usuario = payload.usuario;
     next();
   } catch (error) {
-    console.error(error);
-    res.status(401).json({
+    console.log(error);
+    return res.status(401).json({
       ok: false,
-      mensaje: "Token inválido o expirado",
+      msg: "Token no válido",
     });
   }
 };
 
-export default validarToken;
+export default validarJWT;
