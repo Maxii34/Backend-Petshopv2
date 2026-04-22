@@ -18,10 +18,13 @@ export default class Server {
   }
 
   middlewares() {
-    this.app.use(cors({
-      origin: ["http://localhost:5173", "https://petshop-v2-apolo.netlify.app/"],
-      credentials: true
-    }));
+this.app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://petshop-v2-apolo.netlify.app"
+  ],
+  credentials: true
+}));
 
     this.app.use(express.json());
     this.app.use(cookieParser());
