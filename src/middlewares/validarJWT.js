@@ -13,10 +13,9 @@ const validarJWT = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const { uid, nombre } = jwt.verify(token, process.env.SECRET_JWT);
+    const { usuario } = jwt.verify(token, process.env.SECRETA_JWT);
 
-    req.uid = uid;
-    req.nombre = nombre;
+    req.usuario = usuario;
 
     next();
   } catch (error) {
