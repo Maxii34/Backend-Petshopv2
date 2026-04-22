@@ -19,7 +19,7 @@ export default class Server {
 
   middlewares() {
     this.app.use(cors({
-      origin: ["http://localhost:5173", process.env.FRONTEND_URL_PRO],
+      origin: ["http://localhost:5173", "https://petshop-v2-apolo.netlify.app/"],
       credentials: true
     }));
 
