@@ -1,4 +1,4 @@
-export const validarRoles = (rolesPermitidos) => {
+const validarRoles = (rolesPermitidos) => {
   return (req, res, next) => {
     // El rol viene del payload que decodificamos en validarToken
     if (!req.rol || !rolesPermitidos.includes(req.rol)) {
@@ -9,3 +9,5 @@ export const validarRoles = (rolesPermitidos) => {
     next();
   };
 };
+
+export default validarRoles;
