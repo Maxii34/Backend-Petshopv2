@@ -1,8 +1,8 @@
 import { Preference, Payment } from "mercadopago";
 
-import productRepository from "../repositories/product.repository.js";
-import orderRepository from "../repositories/order.repository.js";
-import cartRepository from "../repositories/cart.repository.js";
+import productRepository from "../repository/product.repository.js";
+import orderRepository from "../repository/order.repository.js";
+import cartRepository from "../repository/cart.repository.js";
 
 /*
  * TODO: Refactorizar integración con Mercado Pago.

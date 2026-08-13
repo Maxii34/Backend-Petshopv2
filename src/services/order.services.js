@@ -1,4 +1,4 @@
-import orderRepository from "../repositories/order.repository.js";
+import orderRepository from "../repository/order.repository.js";
 import { NotFoundError, ValidationError } from "../utils/errors.js";
 
 const nuevaOrder = async (user, products) => {

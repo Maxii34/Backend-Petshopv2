@@ -1,4 +1,4 @@
-import cartRepository from "../repositories/cart.repository.js";
+import cartRepository from "../repository/cart.repository.js";
 
 import {
   NotFoundError,

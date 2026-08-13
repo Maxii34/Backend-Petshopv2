@@ -1,5 +1,5 @@
 import subirImagenCloudinary from "../helpers/cloudinaryUploader.js";
-import productRepository from "../repositories/product.repository.js";
+import productRepository from "../repository/product.repository.js";
 import { NotFoundError, ValidationError } from "../utils/errors.js";
 
 const agregarProducto = async (datosProducto, files) => {

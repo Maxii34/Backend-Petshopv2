@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { generarJWT } from "../middlewares/generarJWT.js";
-import userRepository from "../repositories/user.repository.js";
+import userRepository from "../repository/user.repository.js";
 import { NotFoundError, ValidationError } from "../utils/errors.js";
 
 const crearUsuario = async (datosUsuario) => {
