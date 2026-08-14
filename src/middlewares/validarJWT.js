@@ -2,11 +2,9 @@ import jwt from "jsonwebtoken";
 
 const validarJWT = (req, res, next) => {
   try {
-    // Obtener header Authorization
     const authHeader = req.header("Authorization");
     let token;
 
-    // Validar formato Bearer token
     if (authHeader && authHeader.startsWith("Bearer ")) {
       token = authHeader.slice(7);
     }
@@ -18,11 +16,9 @@ const validarJWT = (req, res, next) => {
       });
     }
 
-    // Verificar token
     const payload = jwt.verify(token, process.env.SECRETA_JWT);
 
-    // Guardar datos en request
-    req.usuario = payload.id;
+    req.usuario = payload.usuario;
     req.rol = payload.rol;
 
     next();
